@@ -1,22 +1,30 @@
-# Use the official Flutter image
-FROM ghcr.io/flutter/flutter:latest
+# First stage: Build the Flutter web app
+FROM cirrusci/flutter:latest AS build
 
 # Set the working directory
 WORKDIR /app
 
-# Copy project files
+# Copy the project files
 COPY . .
 
-# Install dependencies using Flutter (not Dart)
+# Get dependencies
 RUN flutter pub get
 
-# Build the Flutter Web App
+# Build the Flutter web app
 RUN flutter build web
 
-# Use Nginx to serve the app
+# Second stage: Serve the built app with Nginx
 FROM nginx:stable-alpine
-COPY --from=0 /app/build/web /usr/share/nginx/html
+
+# Copy the built web app from the build stage
+COPY --from=build /app/build/web /usr/share/nginx/html
+
+# Expose the port
 EXPOSE 80
+
+# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
+
+
 
 
