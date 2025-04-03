@@ -1,0 +1,26 @@
+# Ignore build directories
+build/
+ios/
+android/
+windows/
+linux/
+macos/
+
+# Ignore Dart tools
+.dart_tool/
+.packages
+
+# Ignore Flutter dependencies
+pubspec.lock
+
+# Ignore IDE/editor configuration files
+.vscode/
+.idea/
+
+# Ignore Git files
+.git/
+.gitignore
+
+# Ignore temporary files
+*.log
+

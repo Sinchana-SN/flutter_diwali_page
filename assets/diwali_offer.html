@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diwali Offers - User Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FF5722; /* Deep Orange */
+            text-align: center;
+            padding: 20px;
+        }
+        .offer-container {
+            background: #FFD700; /* Gold */
+            color: #8B0000; /* Dark Red */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+        @keyframes blink {
+            50% { opacity: 0.5; }
+        }
+        .offer-title {
+            color: #8B0000;
+            animation: blink 1s infinite;
+        }
+        .offer-description {
+            font-size: 20px;
+            margin: 15px 0;
+            color: #000;
+        }
+        .offer-button {
+            background: #B22222; 
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .offer-button:hover {
+            background: #7a21a6;
+        }
+        .countdown {
+            font-size: 24px;
+            font-weight: bold;
+            color: black;
+            margin-top: 10px;
+        }
+        .crud-container {
+            background: #FFF3E0;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            max-width: 400px;
+            margin: auto;
+        }
+        .crud-container h2 {
+            color: #B22222;
+        }
+        .crud-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .crud-container button {
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            padding: 12px;
+            border-radius: 5px;
+            width: 100%;
+            margin-top: 5px;
+        }
+        .crud-container button:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="offer-container">
+        <h1 class="offer-title"> 🎆 Festive Bonanza 🛍️ - Exclusive Deals! 🎊</h1>
+        <p class="offer-description">Get up to <strong>50% OFF</strong> on your favorite products! Limited time only.</p>
+        <p class="countdown" id="countdown">Offer ends in: --:--:--</p>
+        <a href="#" class="offer-button">Shop Now</a>
+    </div>
+
+    <div class="crud-container">
+        <h2>User Management</h2>
+        <input type="text" id="username" placeholder="Enter username">
+        <input type="email" id="email" placeholder="Enter email">
+        <button onclick="createUser()">Create User</button>
+        <button onclick="getUser()">Get User</button>
+        <button onclick="updateUser()">Update User</button>
+        <button onclick="deleteUser()">Delete User</button>
+    </div>
+
+    <script>
+        function createUser() {
+            alert('User created successfully!');
+        }
+        function getUser() {
+            alert('Fetching user details...');
+        }
+        function updateUser() {
+            alert('User updated successfully!');
+        }
+        function deleteUser() {
+            alert('User deleted successfully!');
+        }
+
+        function startCountdown(durationInHours) {
+            const endTime = new Date().getTime() + durationInHours * 60 * 60 * 1000;
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const timeLeft = endTime - now;
+                if (timeLeft <= 0) {
+                    document.getElementById("countdown").innerHTML = "Offer expired!";
+                    clearInterval(timer);
+                    return;
+                }
+                const hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((timeLeft / (1000 * 60)) % 60);
+                const seconds = Math.floor((timeLeft / 1000) % 60);
+                document.getElementById("countdown").innerHTML = `Offer ends in: ${hours}h ${minutes}m ${seconds}s`;  
+            } 
+            
+            const timer = setInterval(updateCountdown, 1000);
+            updateCountdown();
+        }
+
+        startCountdown(5); 
+    </script>
+</body>
+</html>
