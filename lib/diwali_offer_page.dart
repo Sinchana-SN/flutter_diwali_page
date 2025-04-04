@@ -13,8 +13,8 @@ class _DiwaliOfferPageState extends State<DiwaliOfferPage> {
   void initState() {
     super.initState();
     _controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted) // Enable JavaScript
-      ..setBackgroundColor(const Color(0xFFFFFFFF)) // White background
+      ..setJavaScriptMode(JavaScriptMode.unrestricted) 
+      ..setBackgroundColor(const Color(0xFFFFFFFF)) 
       ..setNavigationDelegate(
         NavigationDelegate(
           onProgress: (int progress) {
@@ -31,14 +31,14 @@ class _DiwaliOfferPageState extends State<DiwaliOfferPage> {
           },
         ),
       )
-      ..loadFlutterAsset('assets/diwali_offer.html'); // Load Diwali offer page
+      ..loadFlutterAsset('assets/diwali_offer.html'); 
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Diwali Offers 🎇")),
-      body: WebViewWidget(controller: _controller), // Display WebView
+      body: WebViewWidget(controller: _controller), 
     );
   }
 }

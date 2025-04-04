@@ -9,8 +9,10 @@ environment:
   sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
+  animated_splash_screen: ^1.3.0
   flutter:
     sdk: flutter
+  google_fonts: ^6.1.0 
 
   # WebView Packages
   flutter_inappwebview: ^6.1.5  
@@ -22,6 +24,7 @@ dependencies:
   # Sound and Animations
   audioplayers: ^6.0.0   # Ensure you use this version for stable sound
   flutter_animate: ^4.5.0 
+  flutter_native_splash: ^2.4.5
 
 dev_dependencies:
   flutter_test:
@@ -32,7 +35,15 @@ flutter:
 
   assets:
     - assets/diwali_offer.html
-    
+    - images/background.jpg
+    - images/tshirts.jpg
+    - images/sports_shoes.jpg
+    - images/shirts.jpg
+    - images/jeans.jpg
+    - images/track_pants.jpg
+    - images/belts_wallets.jpg
+    - images/sunglasses.jpg
+  
 
 # Override dependencies to avoid conflicts
 dependency_overrides:

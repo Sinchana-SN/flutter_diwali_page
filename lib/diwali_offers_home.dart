@@ -13,8 +13,8 @@ class _DiwaliOffersHomePageState extends State<DiwaliOffersHomePage> {
   void initState() {
     super.initState();
     _controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted) // Enable JavaScript for interactivity
-      ..setBackgroundColor(const Color(0xFFFFFFFF)) // Set white background
+      ..setJavaScriptMode(JavaScriptMode.unrestricted) 
+      ..setBackgroundColor(const Color(0xFFFFFFFF)) 
       ..setNavigationDelegate(
         NavigationDelegate(
           onProgress: (int progress) {
