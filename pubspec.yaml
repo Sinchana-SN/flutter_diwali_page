@@ -13,6 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   google_fonts: ^6.1.0 
+  flutter_riverpod: ^2.0.0
 
   # WebView Packages
   flutter_inappwebview: ^6.1.5  
@@ -43,6 +44,8 @@ flutter:
     - images/track_pants.jpg
     - images/belts_wallets.jpg
     - images/sunglasses.jpg
+    - images/perfumes.jpg
+    - images/watches.jpg
   
 
 # Override dependencies to avoid conflicts

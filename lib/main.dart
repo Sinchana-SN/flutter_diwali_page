@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'dart:math';
-
-defaultImagePath(String imageName) => "images/$imageName";
-
+import 'package:flutter_riverpod/flutter_riverpod.dart'; 
+import 'providers.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(ProviderScope(child: MyApp())); // Wrap the app with ProviderScope
 }
 
 class MyApp extends StatelessWidget {
@@ -21,12 +20,12 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends ConsumerState<SplashScreen> {
   double rocket1Y = 1.2;
   double rocket2Y = 1.4;
   double rocket3Y = 1.6;
@@ -45,10 +44,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (rocket1Y < -0.5) {
         timer.cancel();
         Future.delayed(Duration(milliseconds: 500), () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => DiwaliHomePage()),
-          );
+           ref.read(splashStateProvider.notifier).state = false; 
         });
       }
     });
@@ -56,6 +52,17 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isSplashVisible = ref.watch(splashStateProvider); 
+
+    if (!isSplashVisible) {
+      Future.microtask(() {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => DiwaliHomePage()),
+        );
+      });
+    }
+
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
@@ -104,16 +111,46 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 }
 
-class DiwaliHomePage extends StatelessWidget {
+class DiwaliHomePage extends StatefulWidget {
+  @override
+  _DiwaliHomePageState createState() => _DiwaliHomePageState();
+}
+
+class _DiwaliHomePageState extends State<DiwaliHomePage> {
+  final TextEditingController _searchController = TextEditingController();
+
   final List<Map<String, String>> categories = [
-    {"title": "T-Shirts", "discount": "40-80% OFF", "image": defaultImagePath("tshirts.jpg")},
-    {"title": "Sports Shoes", "discount": "40-80% OFF", "image": defaultImagePath("sports_shoes.jpg")},
-    {"title": "Shirts", "discount": "40-80% OFF", "image": defaultImagePath("shirts.jpg")},
-    {"title": "Jeans", "discount": "40-80% OFF", "image": defaultImagePath("jeans.jpg")},
-    {"title": "Track Pants", "discount": "50-80% OFF", "image": defaultImagePath("track_pants.jpg")},
-    {"title": "Belts & Wallets", "discount": "50-80% OFF", "image": defaultImagePath("belts_wallets.jpg")},
-    {"title": "Sunglasses", "discount": "40-80% OFF", "image": defaultImagePath("sunglasses.jpg")},
+    {"title": "T-Shirts", "discount": "40-80% OFF", "image": "images/tshirts.jpg"},
+    {"title": "Sports Shoes", "discount": "60-80% OFF", "image": "images/sports_shoes.jpg"},
+    {"title": "Shirts", "discount": "50-80% OFF", "image": "images/shirts.jpg"},
+    {"title": "Jeans", "discount": "40-80% OFF", "image": "images/jeans.jpg"},
+    {"title": "Track Pants", "discount": "50-80% OFF", "image": "images/track_pants.jpg"},
+    {"title": "Belts & Wallets", "discount": "50-80% OFF", "image": "images/belts_wallets.jpg"},
+    {"title": "Sunglasses", "discount": "40-80% OFF", "image": "images/sunglasses.jpg"},
+    {"title": "Perfumes", "discount": "30-70% OFF", "image": "images/perfumes.jpg"},
+    {"title": "Watches", "discount": "35-75% OFF", "image": "images/watches.jpg"},
   ];
+
+  // Initialize filteredCategories to an empty list
+  List<Map<String, String>> filteredCategories = [];
+
+  @override
+  void initState() {
+    super.initState();
+    filteredCategories = List.from(categories); // Initially show all categories
+    _searchController.addListener(() {
+      filterCategories();
+    });
+  }
+
+  void filterCategories() {
+    String query = _searchController.text.toLowerCase();
+    setState(() {
+      filteredCategories = categories
+          .where((category) => category["title"]!.toLowerCase().contains(query))
+          .toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,64 +163,39 @@ class DiwaliHomePage extends StatelessWidget {
           children: [
             Row(
               children: [
-                GestureDetector(
-                  onTap: () {
-                    print("MEN clicked");
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text("MEN", style: TextStyle(color: Colors.black)),
-                  ),
-                ),
+                _buildTab("MEN"),
                 SizedBox(width: 12),
-                GestureDetector(
-                  onTap: () {
-                    print("WOMEN clicked");
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text("WOMEN", style: TextStyle(color: Colors.black)),
-                  ),
-                ),
+                _buildTab("WOMEN"),
                 SizedBox(width: 12),
-                GestureDetector(
-                  onTap: () {
-                    print("HOME clicked");
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text("HOME", style: TextStyle(color: Colors.black)),
-                  ),
-                ),
+                _buildTab("HOME"),
                 SizedBox(width: 12),
-                GestureDetector(
-                  onTap: () {
-                    print("BEAUTY clicked");
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text("BEAUTY", style: TextStyle(color: Colors.black)),
-                  ),
+                _buildTab("BEAUTY"),
+              ],
+            ),
+            Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.search, color: Colors.black),
+                  onPressed: () => print("Search tapped"),
+                ),
+                IconButton(
+                  icon: Icon(Icons.notifications, color: Colors.black),
+                  onPressed: () => print("Bell tapped"),
+                ),
+                IconButton(
+                  icon: Icon(Icons.favorite_border, color: Colors.black),
+                  onPressed: () => print("Wishlist tapped"),
+                ),
+                IconButton(
+                  icon: Icon(Icons.shopping_bag_outlined, color: Colors.black),
+                  onPressed: () => print("Bag tapped"),
+                ),
+                IconButton(
+                  icon: Icon(Icons.person_outline, color: Colors.black),
+                  onPressed: () => print("Profile tapped"),
                 ),
               ],
             ),
-            Icon(Icons.person, color: Colors.black),
           ],
         ),
       ),
@@ -192,6 +204,35 @@ class DiwaliHomePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // 🔍 Search Bar
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.grey.shade400),
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.shade300,
+                    blurRadius: 5,
+                    spreadRadius: 1,
+                  ),
+                ],
+              ),
+              child: TextField(
+                controller: _searchController,
+                onChanged: (value) {
+                  filterCategories();
+                },
+                decoration: InputDecoration(
+                  icon: Icon(Icons.search, color: Colors.grey),
+                  hintText: 'Search for products...',
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+
             Center(
               child: Text(
                 "Shop By Category",
@@ -211,7 +252,7 @@ class DiwaliHomePage extends StatelessWidget {
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
                 ),
-                itemCount: categories.length,
+                itemCount: filteredCategories.length,
                 itemBuilder: (context, index) {
                   return Container(
                     decoration: BoxDecoration(
@@ -232,7 +273,7 @@ class DiwaliHomePage extends StatelessWidget {
                           child: ClipRRect(
                             borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
                             child: Image.asset(
-                              categories[index]["image"]!,
+                              filteredCategories[index]["image"]!,
                               width: double.infinity,
                               height: double.infinity,
                               fit: BoxFit.cover,
@@ -243,8 +284,8 @@ class DiwaliHomePage extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
                             children: [
-                              Text(categories[index]["title"]!, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                              Text(categories[index]["discount"]!, style: TextStyle(fontSize: 12, color: Colors.blue)),
+                              Text(filteredCategories[index]["title"]!, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                              Text(filteredCategories[index]["discount"]!, style: TextStyle(fontSize: 12, color: Colors.blue)),
                               Text("Shop Now", style: TextStyle(fontSize: 12, color: Colors.black)),
                             ],
                           ),
@@ -260,7 +301,21 @@ class DiwaliHomePage extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildTab(String label) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(label, style: TextStyle(color: Colors.black)),
+    );
+  }
 }
+
+
+
 
 
 
